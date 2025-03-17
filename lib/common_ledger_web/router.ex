@@ -17,7 +17,7 @@ defmodule CommonLedgerWeb.Router do
   scope "/", CommonLedgerWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get "/", GroupController, :index
     
     # Auth routes
     get "/auth/login", AuthController, :new
@@ -25,6 +25,9 @@ defmodule CommonLedgerWeb.Router do
     get "/auth/verify", AuthController, :verify_form
     post "/auth/verify", AuthController, :verify
     delete "/auth/logout", AuthController, :logout
+
+    # Group routes
+    resources "/groups", GroupController
   end
 
   # Other scopes may use custom stacks.

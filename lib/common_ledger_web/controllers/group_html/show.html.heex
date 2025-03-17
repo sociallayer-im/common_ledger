@@ -1,0 +1,15 @@
+<.header>
+  Group <%= @group.name %>
+  <:actions>
+    <.link href={~p"/groups/#{@group}/edit"}>
+      <.button>Edit group</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @group.name %></:item>
+  <:item title="Description"><%= @group.description %></:item>
+</.list>
+
+<.back navigate={~p"/groups"}>Back to groups</.back>

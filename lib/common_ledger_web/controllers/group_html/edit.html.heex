@@ -1,0 +1,8 @@
+<.header>
+  Edit Group <%= @group.name %>
+  <:subtitle>Update group information.</:subtitle>
+</.header>
+
+<.group_form changeset={@changeset} action={~p"/groups/#{@group}"} />
+
+<.back navigate={~p"/groups"}>Back to groups</.back>
