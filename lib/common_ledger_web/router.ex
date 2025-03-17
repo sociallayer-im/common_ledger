@@ -22,7 +22,8 @@ defmodule CommonLedgerWeb.Router do
     # Auth routes
     get "/auth/login", AuthController, :new
     post "/auth/login", AuthController, :login
-    get "/auth/verify/:token", AuthController, :verify
+    get "/auth/verify", AuthController, :verify_form
+    post "/auth/verify", AuthController, :verify
     delete "/auth/logout", AuthController, :logout
   end
 

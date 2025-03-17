@@ -20,11 +20,11 @@ defmodule CommonLedger.Accounts.UserToken do
   end
 
   defp build_token(user, context, sent_to) do
-    token = :crypto.strong_rand_bytes(@rand_size)
-    hashed_token = :crypto.hash(@hash_algorithm, token)
+    token = :rand.uniform(900_000) + 100_000
+    token_string = Integer.to_string(token)
 
     {token, %CommonLedger.Accounts.UserToken{
-      token: hashed_token,
+      token: token_string,
       context: context,
       sent_to: sent_to,
       user_id: user.id

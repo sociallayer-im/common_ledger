@@ -27,7 +27,9 @@ defmodule CommonLedger.Accounts do
   def deliver_user_login_token(user) do
     {token, _user_token} = UserToken.build_email_token(user, "login")
     url = "http://localhost:4000/auth/login/#{token}"
-    
+    IO.inspect("token")
+    IO.inspect(token)
+
     CommonLedger.Email.deliver_login_link(user, url)
   end
 
