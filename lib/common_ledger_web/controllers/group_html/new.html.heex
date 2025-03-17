@@ -1,8 +1,50 @@
-<.header>
-  New Group
-  <:subtitle>Create a new group to manage teams and accounts.</:subtitle>
-</.header>
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <div class="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">New Group</h1>
+      <p class="mt-2 text-sm text-gray-500">
+        Create a new group to collaborate with your team members.
+      </p>
+    </div>
+  </div>
 
-<.group_form changeset={@changeset} action={~p"/groups"} />
+  <div class="mt-8">
+    <.simple_form :let={f} for={@changeset} action={@action} class="space-y-8 divide-y divide-gray-200">
+      <div class="space-y-8 divide-y divide-gray-200">
+        <div>
+          <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div class="sm:col-span-4">
+              <.input field={f[:name]} type="text" label="Name" placeholder="Enter group name" />
+            </div>
 
-<.back navigate={~p"/groups"}>Back to groups</.back>
+            <div class="sm:col-span-6">
+              <.input
+                field={f[:description]}
+                type="textarea"
+                label="Description"
+                placeholder="Describe the purpose of this group"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-5">
+        <div class="flex justify-end space-x-3">
+          <.link
+            href={~p"/groups"}
+            class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Cancel
+          </.link>
+          <.button
+            type="submit"
+            class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Create Group
+          </.button>
+        </div>
+      </div>
+    </.simple_form>
+  </div>
+</div>
