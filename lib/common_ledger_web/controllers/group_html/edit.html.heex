@@ -3,26 +3,34 @@
     <div>
       <h1 class="text-2xl font-bold text-gray-900">Edit Group</h1>
       <p class="mt-2 text-sm text-gray-500">
-        Update group information and settings.
+        Update your group's information.
       </p>
     </div>
   </div>
 
   <div class="mt-8">
-    <.simple_form :let={f} for={@changeset} action={@action} class="space-y-8 divide-y divide-gray-200">
+    <.form :let={f} for={@changeset} action={@action} class="space-y-8 divide-y divide-gray-200">
       <div class="space-y-8 divide-y divide-gray-200">
         <div>
           <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             <div class="sm:col-span-4">
-              <.input field={f[:name]} type="text" label="Name" />
+              <label for={f[:name].id} class="block text-sm font-medium text-gray-700">Name</label>
+              <div class="mt-1">
+                <%= Phoenix.HTML.Form.text_input f, :name, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                <%= for {msg, _opts} <- f[:name].errors do %>
+                  <p class="mt-2 text-sm text-red-600"><%= msg %></p>
+                <% end %>
+              </div>
             </div>
 
             <div class="sm:col-span-6">
-              <.input
-                field={f[:description]}
-                type="textarea"
-                label="Description"
-              />
+              <label for={f[:description].id} class="block text-sm font-medium text-gray-700">Description</label>
+              <div class="mt-1">
+                <%= Phoenix.HTML.Form.textarea f, :description, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                <%= for {msg, _opts} <- f[:description].errors do %>
+                  <p class="mt-2 text-sm text-red-600"><%= msg %></p>
+                <% end %>
+              </div>
             </div>
           </div>
         </div>
@@ -36,14 +44,11 @@
           >
             Cancel
           </.link>
-          <.button
-            type="submit"
-            class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
+          <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             Save Changes
-          </.button>
+          </button>
         </div>
       </div>
-    </.simple_form>
+    </.form>
   </div>
 </div>

@@ -34,7 +34,7 @@ defmodule CommonLedgerWeb.GroupController do
   def edit(conn, %{"id" => id}) do
     group = Groups.get_group!(id)
     changeset = Group.changeset(group, %{})
-    render(conn, :edit, group: group, changeset: changeset)
+    render(conn, :edit, group: group, changeset: changeset, action: ~p"/groups/#{group}")
   end
 
   def update(conn, %{"id" => id, "group" => group_params}) do
@@ -47,7 +47,7 @@ defmodule CommonLedgerWeb.GroupController do
         |> redirect(to: ~p"/groups/#{group}")
 
       {:error, changeset} ->
-        render(conn, :edit, group: group, changeset: changeset)
+        render(conn, :edit, group: group, changeset: changeset, action: ~p"/groups/#{group}")
     end
   end
 
