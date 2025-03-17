@@ -18,6 +18,12 @@ defmodule CommonLedgerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    
+    # Auth routes
+    get "/auth/login", AuthController, :new
+    post "/auth/login", AuthController, :login
+    get "/auth/verify/:token", AuthController, :verify
+    delete "/auth/logout", AuthController, :logout
   end
 
   # Other scopes may use custom stacks.

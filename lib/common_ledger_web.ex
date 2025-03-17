@@ -40,11 +40,10 @@ defmodule CommonLedgerWeb do
     quote do
       use Phoenix.Controller,
         formats: [:html, :json],
-        layouts: [html: CommonLedgerWeb.Layouts]
-
-      use Gettext, backend: CommonLedgerWeb.Gettext
+        layouts: [html: {CommonLedgerWeb.Layouts, :app}]
 
       import Plug.Conn
+      import CommonLedgerWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -82,13 +81,11 @@ defmodule CommonLedgerWeb do
 
   defp html_helpers do
     quote do
-      # Translation
-      use Gettext, backend: CommonLedgerWeb.Gettext
-
       # HTML escaping functionality
       import Phoenix.HTML
-      # Core UI components
+      # Core UI components and translation
       import CommonLedgerWeb.CoreComponents
+      import CommonLedgerWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
