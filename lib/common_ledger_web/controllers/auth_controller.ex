@@ -51,9 +51,11 @@ defmodule CommonLedgerWeb.AuthController do
     
     case Accounts.get_user_by_email_and_token(email, code) do
       {user, _token} ->
+        token = Accounts.generate_user_session_token(user)
+
         conn
         |> delete_session(:login_email)
-        |> put_session(:user_id, user.id)
+        |> put_session(:user_token, token)
         |> configure_session(renew: true)
         |> put_flash(:info, "Welcome back!")
         |> redirect(to: ~p"/")
@@ -66,7 +68,12 @@ defmodule CommonLedgerWeb.AuthController do
   end
 
   def logout(conn, _params) do
+    if user_token = get_session(conn, :user_token) do
+      Accounts.delete_user_session_token(user_token)
+    end
+
     conn
+    |> delete_session(:user_token)
     |> configure_session(drop: true)
     |> redirect(to: ~p"/")
   end

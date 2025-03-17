@@ -19,9 +19,25 @@ defmodule CommonLedger.Accounts do
   end
 
   def generate_user_session_token(user) do
-    {token, user_token} = UserToken.build_email_token(user, "session")
+    {token, user_token} = UserToken.build_session_token(user)
     Repo.insert!(user_token)
     token
+  end
+
+  def get_user_by_session_token(token) do
+    query =
+      from token in UserToken,
+        join: user in assoc(token, :user),
+        where: token.context == "session",
+        where: token.token == ^:crypto.hash(:sha256, token),
+        select: user
+
+    Repo.one(query)
+  end
+
+  def delete_user_session_token(token) do
+    Repo.delete_all(UserToken.token_and_context_query(token, "session"))
+    :ok
   end
 
   def deliver_user_login_token(user) do

@@ -11,7 +11,7 @@ defmodule CommonLedgerWeb.GroupController do
 
   def new(conn, _params) do
     changeset = Group.changeset(%Group{}, %{})
-    render(conn, :new, changeset: changeset)
+    render(conn, :new, changeset: changeset, action: ~p"/groups")
   end
 
   def create(conn, %{"group" => group_params}) do

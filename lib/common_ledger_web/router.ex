@@ -8,6 +8,7 @@ defmodule CommonLedgerWeb.Router do
     plug :put_root_layout, html: {CommonLedgerWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -49,6 +50,15 @@ defmodule CommonLedgerWeb.Router do
 
       live_dashboard "/dashboard", metrics: CommonLedgerWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+  end
+
+  defp fetch_current_user(conn, _opts) do
+    if user_token = get_session(conn, :user_token) do
+      user = CommonLedger.Accounts.get_user_by_session_token(user_token)
+      assign(conn, :current_user, user)
+    else
+      assign(conn, :current_user, nil)
     end
   end
 end
