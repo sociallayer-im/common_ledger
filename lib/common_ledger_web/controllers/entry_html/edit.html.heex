@@ -8,7 +8,7 @@
 
   <div class="mt-8">
     <.simple_form :let={f} for={@changeset} method="put" action={~p"/entries/#{@entry.id}"}>
-      <.input field={f[:amount]} type="number" step="0.01" min="0.01" label="Amount" />
+      <.input field={f[:amount]} type="number" step="0.01" label="Amount" />
       <.input field={f[:description]} type="textarea" label="Description" />
       <.input
         field={f[:currency]}
