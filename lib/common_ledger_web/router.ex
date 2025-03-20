@@ -32,6 +32,11 @@ defmodule CommonLedgerWeb.Router do
     get "/groups/:id/add_member", GroupController, :add_member_form
     post "/groups/:id/add_member", GroupController, :add_member
     delete "/groups/:id/members/:user_id", GroupController, :remove_member
+
+    # Team routes
+    get "/groups/:group_id/teams/new", TeamController, :new
+    post "/groups/:group_id/teams", TeamController, :create
+    resources "/teams", TeamController, except: [:new, :create]
   end
 
   # Other scopes may use custom stacks.
