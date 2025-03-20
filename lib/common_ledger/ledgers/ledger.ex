@@ -6,7 +6,7 @@ defmodule CommonLedger.Ledgers.Ledger do
   schema "ledgers" do
     field :name, :string
     field :description, :string
-    field :currency_type, :string
+    field :currency_type, :string, default: "CNY"
 
     belongs_to :project, Project
     has_many :transactions, CommonLedger.Transactions.Transaction
