@@ -53,6 +53,11 @@ defmodule CommonLedgerWeb.Router do
     get "/entries/:id/edit", EntryController, :edit
     put "/entries/:id", EntryController, :update
     delete "/entries/:id", EntryController, :delete
+
+    # Account routes
+    get "/projects/:project_id/accounts/new", AccountController, :new
+    post "/projects/:project_id/accounts", AccountController, :create
+    delete "/accounts/:id", AccountController, :delete
   end
 
   # Other scopes may use custom stacks.
