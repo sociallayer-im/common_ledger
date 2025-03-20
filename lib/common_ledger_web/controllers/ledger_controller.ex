@@ -34,4 +34,10 @@ defmodule CommonLedgerWeb.LedgerController do
     |> put_flash(:info, "Ledger deleted successfully.")
     |> redirect(to: ~p"/projects/#{ledger.project_id}")
   end
+
+  def show(conn, %{"id" => id}) do
+    ledger = Ledgers.get_ledger!(id)
+    project = Projects.get_project!(ledger.project_id)
+    render(conn, :show, ledger: ledger, project: project)
+  end
 end

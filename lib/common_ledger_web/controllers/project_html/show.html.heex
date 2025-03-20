@@ -139,7 +139,9 @@
               <div class="py-4 flex items-center justify-between">
                 <div class="flex items-center">
                   <div class="ml-3">
-                    <p class="text-sm font-medium text-gray-900"><%= ledger.name %></p>
+                    <.link href={~p"/ledgers/#{ledger.id}"} class="text-sm font-medium text-gray-900 hover:text-gray-700">
+                      <%= ledger.name %>
+                    </.link>
                     <p class="text-sm text-gray-500">
                       <%= ledger.description || "No description" %> • <%= ledger.currency_type %>
                     </p>

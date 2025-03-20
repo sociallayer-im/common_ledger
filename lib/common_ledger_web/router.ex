@@ -44,6 +44,7 @@ defmodule CommonLedgerWeb.Router do
     # Ledger routes
     get "/projects/:project_id/ledgers/new", LedgerController, :new
     post "/projects/:project_id/ledgers", LedgerController, :create
+    get "/ledgers/:id", LedgerController, :show
     delete "/ledgers/:id", LedgerController, :delete
   end
 
