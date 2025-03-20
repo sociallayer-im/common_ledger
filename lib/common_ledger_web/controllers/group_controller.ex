@@ -4,7 +4,7 @@ defmodule CommonLedgerWeb.GroupController do
   alias CommonLedger.Groups
   alias CommonLedger.Groups.Group
   alias CommonLedger.Repo
-  alias CommonLedger.Accounts
+  alias CommonLedger.Teams
 
   def index(conn, _params) do
     groups = Groups.list_groups()
@@ -29,7 +29,7 @@ defmodule CommonLedgerWeb.GroupController do
   end
 
   def show(conn, %{"id" => id}) do
-    group = Groups.get_group!(id) |> Repo.preload(:members)
+    group = Groups.get_group!(id) |> Repo.preload([:members, :teams])
     render(conn, :show, group: group)
   end
 
