@@ -14,7 +14,14 @@
         field={f[:currency_type]}
         type="select"
         label="Currency"
-        options={["USD", "EUR", "GBP", "JPY", "CNY"]}
+        prompt="Select a currency"
+        options={[
+          {"US Dollar (USD)", "USD"},
+          {"Euro (EUR)", "EUR"},
+          {"British Pound (GBP)", "GBP"},
+          {"Japanese Yen (JPY)", "JPY"},
+          {"Chinese Yuan (CNY)", "CNY"}
+        ]}
       />
       <:actions>
         <.button>Save Ledger</.button>

@@ -14,12 +14,16 @@ defmodule CommonLedger.Ledgers.Ledger do
     timestamps()
   end
 
+  @currencies ~w(USD EUR GBP JPY CNY)
+
   def changeset(ledger, attrs) do
     ledger
     |> cast(attrs, [:name, :description, :currency_type, :project_id])
     |> validate_required([:name, :currency_type, :project_id])
     |> validate_length(:name, min: 2, max: 160)
-    |> validate_inclusion(:currency_type, ~w(USD EUR GBP JPY CNY))
+    |> validate_inclusion(:currency_type, @currencies)
     |> foreign_key_constraint(:project_id)
   end
+
+  def currencies, do: @currencies
 end
