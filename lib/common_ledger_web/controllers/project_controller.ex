@@ -4,6 +4,7 @@ defmodule CommonLedgerWeb.ProjectController do
   alias CommonLedger.Projects
   alias CommonLedger.Projects.Project
   alias CommonLedger.Groups
+  alias CommonLedger.Accounts
 
   def new(conn, %{"group_id" => group_id}) do
     group = Groups.get_group!(group_id)
@@ -59,5 +60,51 @@ defmodule CommonLedgerWeb.ProjectController do
     conn
     |> put_flash(:info, "Project deleted successfully.")
     |> redirect(to: ~p"/groups/#{project.group_id}")
+  end
+
+  def add_member_form(conn, %{"id" => id}) do
+    project = Projects.get_project!(id)
+    render(conn, :add_member_form, project: project)
+  end
+
+  def add_member(conn, %{"id" => id, "email" => email}) do
+    project = Projects.get_project!(id)
+
+    case Accounts.get_user_by_email(email) do
+      nil ->
+        conn
+        |> put_flash(:error, "User not found")
+        |> redirect(to: ~p"/projects/#{project}/add_member")
+
+      user ->
+        case Projects.add_member(project, user) do
+          {:ok, _project} ->
+            conn
+            |> put_flash(:info, "Member added successfully")
+            |> redirect(to: ~p"/projects/#{project}")
+
+          {:error, _changeset} ->
+            conn
+            |> put_flash(:error, "Failed to add member")
+            |> redirect(to: ~p"/projects/#{project}/add_member")
+        end
+    end
+  end
+
+  def remove_member(conn, %{"id" => project_id, "user_id" => user_id}) do
+    project = Projects.get_project!(project_id)
+    user = Accounts.get_user!(user_id)
+
+    case Projects.remove_member(project, user) do
+      {:ok, _project} ->
+        conn
+        |> put_flash(:info, "Member removed successfully")
+        |> redirect(to: ~p"/projects/#{project}")
+
+      {:error, _changeset} ->
+        conn
+        |> put_flash(:error, "Failed to remove member")
+        |> redirect(to: ~p"/projects/#{project}")
+    end
   end
 end
