@@ -29,7 +29,11 @@ defmodule CommonLedgerWeb.GroupController do
   end
 
   def show(conn, %{"id" => id}) do
-    group = Groups.get_group!(id) |> Repo.preload([:members, :projects])
+    group = Groups.get_group!(id) 
+            |> Repo.preload([
+              :members,
+              projects: [:members]  # Preload members for each project
+            ])
     render(conn, :show, group: group)
   end
 
@@ -93,7 +97,7 @@ defmodule CommonLedgerWeb.GroupController do
 
   def remove_member(conn, %{"id" => group_id, "user_id" => user_id}) do
     group = Groups.get_group!(group_id)
-    user = Accounts.get_user!(user_id)
+    user = CommonLedger.Accounts.get_user!(user_id)
 
     case Groups.remove_member(group, user) do
       {:ok, _group} ->
