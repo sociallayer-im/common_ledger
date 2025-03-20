@@ -1,8 +1,8 @@
-defmodule CommonLedger.Repo.Migrations.CreateTransactions do
+defmodule CommonLedger.Repo.Migrations.CreateEntries do
   use Ecto.Migration
 
   def change do
-    create table(:transactions) do
+    create table(:entries) do
       add :amount, :decimal, null: false
       add :currency, :string, null: false
       add :description, :string
@@ -12,7 +12,7 @@ defmodule CommonLedger.Repo.Migrations.CreateTransactions do
       timestamps()
     end
 
-    create index(:transactions, [:from_account_id])
-    create index(:transactions, [:to_account_id])
+    create index(:entries, [:from_account_id])
+    create index(:entries, [:to_account_id])
   end
 end

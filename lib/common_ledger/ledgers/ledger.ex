@@ -9,7 +9,7 @@ defmodule CommonLedger.Ledgers.Ledger do
     field :currency_type, :string, default: "CNY"
 
     belongs_to :project, Project
-    has_many :transactions, CommonLedger.Transactions.Transaction
+    has_many :entries, CommonLedger.Entries.Entry
 
     timestamps()
   end

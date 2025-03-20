@@ -13,13 +13,13 @@ defmodule CommonLedger.Repo.Migrations.CreateLedgers do
 
     create index(:ledgers, [:project_id])
 
-    # Update transactions to reference ledgers instead of accounts
-    alter table(:transactions) do
+    # Update entries to reference ledgers instead of accounts
+    alter table(:entries) do
       remove :from_account_id
       remove :to_account_id
       add :ledger_id, references(:ledgers, on_delete: :delete_all), null: false
     end
 
-    create index(:transactions, [:ledger_id])
+    create index(:entries, [:ledger_id])
   end
 end

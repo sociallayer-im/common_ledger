@@ -1,9 +1,9 @@
-defmodule CommonLedger.Transactions.Transaction do
+defmodule CommonLedger.Entries.Entry do
   use Ecto.Schema
   import Ecto.Changeset
   alias CommonLedger.Ledgers.Ledger
 
-  schema "transactions" do
+  schema "entries" do
     field :amount, :decimal
     field :currency, :string
     field :description, :string
@@ -13,8 +13,8 @@ defmodule CommonLedger.Transactions.Transaction do
     timestamps()
   end
 
-  def changeset(transaction, attrs) do
-    transaction
+  def changeset(entry, attrs) do
+    entry
     |> cast(attrs, [:amount, :currency, :description, :ledger_id])
     |> validate_required([:amount, :currency, :ledger_id])
     |> validate_number(:amount, greater_than: 0)
