@@ -26,6 +26,28 @@ defmodule CommonLedgerWeb.AccountController do
     end
   end
 
+  def edit(conn, %{"id" => id}) do
+    account = Accounts.get_account!(id)
+    project = Projects.get_project!(account.project_id)
+    changeset = Accounts.change_account(account)
+    render(conn, :edit, account: account, changeset: changeset, project: project)
+  end
+
+  def update(conn, %{"id" => id, "account" => account_params}) do
+    account = Accounts.get_account!(id)
+
+    case Accounts.update_account(account, account_params) do
+      {:ok, account} ->
+        conn
+        |> put_flash(:info, "Account updated successfully.")
+        |> redirect(to: ~p"/projects/#{account.project_id}")
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        project = Projects.get_project!(account.project_id)
+        render(conn, :edit, account: account, changeset: changeset, project: project)
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     account = Accounts.get_account!(id)
     {:ok, _account} = Accounts.delete_account(account)

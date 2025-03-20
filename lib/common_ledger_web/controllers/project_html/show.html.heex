@@ -148,6 +148,12 @@
                   </div>
                 </div>
                 <div class="flex items-center space-x-4">
+                  <.link
+                    href={~p"/accounts/#{account.id}/edit"}
+                    class="text-sm text-indigo-600 hover:text-indigo-900"
+                  >
+                    Edit
+                  </.link>
                   <form action={~p"/accounts/#{account.id}"} method="post" class="inline">
                     <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
                     <input type="hidden" name="_method" value="delete" />

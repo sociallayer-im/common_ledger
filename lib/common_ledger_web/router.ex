@@ -57,6 +57,8 @@ defmodule CommonLedgerWeb.Router do
     # Account routes
     get "/projects/:project_id/accounts/new", AccountController, :new
     post "/projects/:project_id/accounts", AccountController, :create
+    get "/accounts/:id/edit", AccountController, :edit
+    put "/accounts/:id", AccountController, :update
     delete "/accounts/:id", AccountController, :delete
   end
 
