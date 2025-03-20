@@ -40,6 +40,11 @@ defmodule CommonLedgerWeb.Router do
     get "/projects/:id/add_member", ProjectController, :add_member_form
     post "/projects/:id/add_member", ProjectController, :add_member
     delete "/projects/:id/members/:user_id", ProjectController, :remove_member
+
+    # Ledger routes
+    get "/projects/:project_id/ledgers/new", LedgerController, :new
+    post "/projects/:project_id/ledgers", LedgerController, :create
+    delete "/ledgers/:id", LedgerController, :delete
   end
 
   # Other scopes may use custom stacks.

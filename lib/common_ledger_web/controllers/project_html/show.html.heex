@@ -117,5 +117,52 @@
         </div>
       </div>
     </div>
+
+    <div class="bg-white shadow sm:rounded-lg lg:col-span-2">
+      <div class="px-4 py-5 sm:p-6">
+        <div class="flex justify-between items-center">
+          <h3 class="text-base font-semibold leading-6 text-gray-900">Ledgers</h3>
+          <.link
+            href={~p"/projects/#{@project}/ledgers/new"}
+            class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+          >
+            Add Ledger
+          </.link>
+        </div>
+        <div class="mt-4 divide-y divide-gray-200">
+          <%= if Enum.empty?(@ledgers) do %>
+            <div class="py-4 text-sm text-gray-500 text-center">
+              No ledgers yet
+            </div>
+          <% else %>
+            <%= for ledger <- @ledgers do %>
+              <div class="py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="ml-3">
+                    <p class="text-sm font-medium text-gray-900"><%= ledger.name %></p>
+                    <p class="text-sm text-gray-500">
+                      <%= ledger.description || "No description" %> • <%= ledger.currency_type %>
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                  <form action={~p"/ledgers/#{ledger.id}"} method="post" class="inline">
+                    <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                    <input type="hidden" name="_method" value="delete" />
+                    <button
+                      type="submit"
+                      class="text-sm text-red-600 hover:text-red-900"
+                      data-confirm="Are you sure you want to delete this ledger?"
+                    >
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

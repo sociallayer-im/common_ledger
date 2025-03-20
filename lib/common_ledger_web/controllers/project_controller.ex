@@ -5,6 +5,7 @@ defmodule CommonLedgerWeb.ProjectController do
   alias CommonLedger.Projects.Project
   alias CommonLedger.Groups
   alias CommonLedger.Accounts
+  alias CommonLedger.Ledgers
 
   def new(conn, %{"group_id" => group_id}) do
     group = Groups.get_group!(group_id)
@@ -30,7 +31,8 @@ defmodule CommonLedgerWeb.ProjectController do
   def show(conn, %{"id" => id}) do
     project = Projects.get_project!(id) |> CommonLedger.Repo.preload([:members])
     group = Groups.get_group!(project.group_id)
-    render(conn, :show, project: project, group: group)
+    ledgers = CommonLedger.Ledgers.list_ledgers_by_project(project.id)
+    render(conn, :show, project: project, group: group, ledgers: ledgers)
   end
 
   def edit(conn, %{"id" => id}) do
