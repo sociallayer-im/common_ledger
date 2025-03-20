@@ -7,6 +7,8 @@ defmodule CommonLedger.Groups.Group do
     field :name, :string
     field :description, :string
     
+    many_to_many :members, User, join_through: "group_members"
+    
     timestamps()
   end
 

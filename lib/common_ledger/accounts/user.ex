@@ -1,11 +1,14 @@
 defmodule CommonLedger.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias CommonLedger.Groups.Group
 
   schema "users" do
     field :email, :string
     field :name, :string
     field :confirmed_at, :naive_datetime
+
+    many_to_many :groups, Group, join_through: "group_members"
 
     timestamps()
   end

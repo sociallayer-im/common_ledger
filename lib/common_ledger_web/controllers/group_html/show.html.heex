@@ -44,22 +44,22 @@
         >
           <svg class="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
             <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2h-4a1 1 0 010-2h4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
           </svg>
           Edit
         </.link>
       </span>
 
       <span class="ml-3 hidden sm:block">
-        <button
-          type="button"
+        <.link
+          href={~p"/groups/#{@group}/add_member"}
           class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
         >
           <svg class="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
             <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
           </svg>
           Add Member
-        </button>
+        </.link>
       </span>
 
       <span class="sm:ml-3">
@@ -90,20 +90,34 @@
       <div class="px-4 py-5 sm:p-6">
         <h3 class="text-base font-semibold leading-6 text-gray-900">Members</h3>
         <div class="mt-4 divide-y divide-gray-200">
-          <div class="flex items-center justify-between py-4">
-            <div class="flex items-center">
-              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-500">
-                <span class="text-sm font-medium leading-none text-white">JD</span>
-              </span>
-              <div class="ml-3">
-                <p class="text-sm font-medium text-gray-900">John Doe</p>
-                <p class="text-sm text-gray-500">john@example.com</p>
+          <%= for member <- @group.members do %>
+            <div class="flex items-center justify-between py-4">
+              <div class="flex items-center">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-500">
+                  <span class="text-sm font-medium leading-none text-white">
+                    <%= String.slice(member.email, 0, 2) |> String.upcase() %>
+                  </span>
+                </span>
+                <div class="ml-3">
+                  <p class="text-sm font-medium text-gray-900"><%= member.name || "Unnamed User" %></p>
+                  <p class="text-sm text-gray-500"><%= member.email %></p>
+                </div>
               </div>
+              <form action={~p"/groups/#{@group}/members/#{member.id}"} method="post" class="inline">
+                <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                <input type="hidden" name="_method" value="delete" />
+                <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-500">
+                  Remove
+                </button>
+              </form>
             </div>
-            <button type="button" class="text-sm font-medium text-red-600 hover:text-red-500">
-              Remove
-            </button>
-          </div>
+          <% end %>
+
+          <%= if Enum.empty?(@group.members) do %>
+            <div class="py-4 text-sm text-gray-500 text-center">
+              No members yet
+            </div>
+          <% end %>
         </div>
       </div>
     </div>

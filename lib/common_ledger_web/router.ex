@@ -29,6 +29,9 @@ defmodule CommonLedgerWeb.Router do
 
     # Group routes
     resources "/groups", GroupController
+    get "/groups/:id/add_member", GroupController, :add_member_form
+    post "/groups/:id/add_member", GroupController, :add_member
+    delete "/groups/:id/members/:user_id", GroupController, :remove_member
   end
 
   # Other scopes may use custom stacks.

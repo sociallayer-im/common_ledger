@@ -57,4 +57,6 @@ defmodule CommonLedger.Accounts do
 
     Repo.one(query)
   end
+
+  def get_user!(id), do: Repo.get!(User, id)
 end
