@@ -336,7 +336,7 @@ defmodule CommonLedgerWeb.CoreComponents do
         {@rest}
       >
         <option :if={@prompt} value=""><%= @prompt %></option>
-        {Phoenix.HTML.Form.options_for_select(@options, @value)}
+        <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
       </select>
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
