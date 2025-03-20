@@ -2,22 +2,27 @@ defmodule CommonLedger.Entries.Entry do
   use Ecto.Schema
   import Ecto.Changeset
   alias CommonLedger.Ledgers.Ledger
+  alias CommonLedger.Accounts.Account
 
   schema "entries" do
     field :amount, :decimal
     field :currency, :string
     field :description, :string
+    field :memo, :string
+    field :category, :string
     
     belongs_to :ledger, Ledger
+    belongs_to :account, Account
 
     timestamps()
   end
 
   def changeset(entry, attrs) do
     entry
-    |> cast(attrs, [:amount, :currency, :description, :ledger_id])
-    |> validate_required([:amount, :currency, :ledger_id])
+    |> cast(attrs, [:amount, :currency, :description, :ledger_id, :account_id, :memo, :category])
+    |> validate_required([:amount, :currency, :ledger_id, :account_id])
     |> validate_inclusion(:currency, ~w(USD EUR GBP JPY CNY))
     |> foreign_key_constraint(:ledger_id)
+    |> foreign_key_constraint(:account_id)
   end
 end

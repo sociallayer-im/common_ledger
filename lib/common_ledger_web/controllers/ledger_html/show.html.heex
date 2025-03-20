@@ -81,10 +81,21 @@
                   <div class="ml-3">
                     <p class="text-sm font-medium text-gray-900">
                       <%= Number.Currency.number_to_currency(entry.amount, unit: entry.currency) %>
+                      <%= if entry.category do %>
+                        • <%= entry.category %>
+                      <% end %>
                     </p>
                     <p class="text-sm text-gray-500">
                       <%= entry.description || "No description" %>
+                      <%= if entry.account do %>
+                        • Account: <%= entry.account.name %>
+                      <% end %>
                     </p>
+                    <%= if entry.memo do %>
+                      <p class="text-sm text-gray-500">
+                        Memo: <%= entry.memo %>
+                      </p>
+                    <% end %>
                   </div>
                 </div>
                 <div class="flex items-center space-x-4">

@@ -8,8 +8,10 @@
 
   <div class="mt-8">
     <.simple_form :let={f} for={@changeset} action={~p"/ledgers/#{@ledger.id}/entries"}>
-      <.input field={f[:amount]} type="number" step="0.01" min="0.01" label="Amount" />
+      <.input field={f[:amount]} type="number" step="0.01" label="Amount" />
       <.input field={f[:description]} type="textarea" label="Description" />
+      <.input field={f[:memo]} type="textarea" label="Memo" />
+      <.input field={f[:category]} type="text" label="Category" />
       <.input
         field={f[:currency]}
         type="select"
@@ -23,6 +25,13 @@
           {"Chinese Yuan (CNY)", "CNY"}
         ]}
         value={@ledger.currency_type}
+      />
+      <.input
+        field={f[:account_id]}
+        type="select"
+        label="Account"
+        prompt="Select an account"
+        options={Enum.map(@accounts, fn account -> {account.name, account.id} end)}
       />
       <:actions>
         <.button>Save Entry</.button>

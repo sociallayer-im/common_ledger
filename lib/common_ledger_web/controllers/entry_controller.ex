@@ -4,11 +4,13 @@ defmodule CommonLedgerWeb.EntryController do
   alias CommonLedger.Entries
   alias CommonLedger.Entries.Entry
   alias CommonLedger.Ledgers
+  alias CommonLedger.Accounts.Accounts
 
   def new(conn, %{"ledger_id" => ledger_id}) do
     ledger = Ledgers.get_ledger!(ledger_id)
+    accounts = Accounts.list_accounts_by_project(ledger.project_id)
     changeset = Entry.changeset(%Entry{ledger_id: ledger_id}, %{})
-    render(conn, :new, changeset: changeset, ledger: ledger)
+    render(conn, :new, changeset: changeset, ledger: ledger, accounts: accounts)
   end
 
   def create(conn, %{"ledger_id" => ledger_id, "entry" => entry_params}) do
@@ -22,15 +24,17 @@ defmodule CommonLedgerWeb.EntryController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         ledger = Ledgers.get_ledger!(ledger_id)
-        render(conn, :new, changeset: changeset, ledger: ledger)
+        accounts = Accounts.list_accounts_by_project(ledger.project_id)
+        render(conn, :new, changeset: changeset, ledger: ledger, accounts: accounts)
     end
   end
 
   def edit(conn, %{"id" => id}) do
     entry = Entries.get_entry!(id)
     ledger = Ledgers.get_ledger!(entry.ledger_id)
+    accounts = Accounts.list_accounts_by_project(ledger.project_id)
     changeset = Entries.change_entry(entry)
-    render(conn, :edit, entry: entry, changeset: changeset, ledger: ledger)
+    render(conn, :edit, entry: entry, changeset: changeset, ledger: ledger, accounts: accounts)
   end
 
   def update(conn, %{"id" => id, "entry" => entry_params}) do
@@ -44,7 +48,8 @@ defmodule CommonLedgerWeb.EntryController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         ledger = Ledgers.get_ledger!(entry.ledger_id)
-        render(conn, :edit, entry: entry, changeset: changeset, ledger: ledger)
+        accounts = Accounts.list_accounts_by_project(ledger.project_id)
+        render(conn, :edit, entry: entry, changeset: changeset, ledger: ledger, accounts: accounts)
     end
   end
 

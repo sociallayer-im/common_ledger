@@ -4,10 +4,13 @@ defmodule CommonLedger.Entries do
   alias CommonLedger.Entries.Entry
   
   def list_entries_by_ledger(ledger_id) do
-    Repo.all(from e in Entry, where: e.ledger_id == ^ledger_id)
+    Entry
+    |> where([e], e.ledger_id == ^ledger_id)
+    |> preload(:account)
+    |> Repo.all()
   end
 
-  def get_entry!(id), do: Repo.get!(Entry, id)
+  def get_entry!(id), do: Repo.get!(Entry, id) |> Repo.preload(:account)
   
   def create_entry(attrs \\ %{}) do
     %Entry{}
