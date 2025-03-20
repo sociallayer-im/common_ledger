@@ -4,7 +4,7 @@ defmodule CommonLedgerWeb.GroupController do
   alias CommonLedger.Groups
   alias CommonLedger.Groups.Group
   alias CommonLedger.Repo
-  alias CommonLedger.Teams
+  alias CommonLedger.Projects
 
   def index(conn, _params) do
     groups = Groups.list_groups()
@@ -29,7 +29,7 @@ defmodule CommonLedgerWeb.GroupController do
   end
 
   def show(conn, %{"id" => id}) do
-    group = Groups.get_group!(id) |> Repo.preload([:members, :teams])
+    group = Groups.get_group!(id) |> Repo.preload([:members, :projects])
     render(conn, :show, group: group)
   end
 
@@ -69,20 +69,20 @@ defmodule CommonLedgerWeb.GroupController do
 
   def add_member(conn, %{"id" => id, "email" => email}) do
     group = Groups.get_group!(id)
-    
+
     case CommonLedger.Accounts.get_user_by_email(email) do
       nil ->
         conn
         |> put_flash(:error, "User not found")
         |> redirect(to: ~p"/groups/#{group}/add_member")
-        
+
       user ->
         case Groups.add_member(group, user) do
           {:ok, _group} ->
             conn
             |> put_flash(:info, "Member added successfully")
             |> redirect(to: ~p"/groups/#{group}")
-            
+
           {:error, _changeset} ->
             conn
             |> put_flash(:error, "Failed to add member")

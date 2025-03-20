@@ -6,11 +6,11 @@ defmodule CommonLedger.Repo.Migrations.CreateAccounts do
       add :name, :string, null: false
       add :currency_type, :string, null: false
       add :balance, :decimal, null: false, default: 0
-      add :team_id, references(:teams, on_delete: :delete_all), null: false
+      add :project_id, references(:projects, on_delete: :delete_all), null: false
 
       timestamps()
     end
 
-    create index(:accounts, [:team_id])
+    create index(:accounts, [:project_id])
   end
 end
