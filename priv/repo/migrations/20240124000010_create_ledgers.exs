@@ -6,12 +6,12 @@ defmodule CommonLedger.Repo.Migrations.CreateLedgers do
       add :name, :string, null: false
       add :description, :string
       add :currency_type, :string, null: false
-      add :team_id, references(:teams, on_delete: :delete_all), null: false
+      add :project_id, references(:projects, on_delete: :delete_all), null: false
 
       timestamps()
     end
 
-    create index(:ledgers, [:team_id])
+    create index(:ledgers, [:project_id])
 
     # Update transactions to reference ledgers instead of accounts
     alter table(:transactions) do

@@ -3,8 +3,8 @@ defmodule CommonLedger.Ledgers do
   alias CommonLedger.Repo
   alias CommonLedger.Ledgers.Ledger
 
-  def list_ledgers_by_team(team_id) do
-    Repo.all(from l in Ledger, where: l.team_id == ^team_id)
+  def list_ledgers_by_project(project_id) do
+    Repo.all(from l in Ledger, where: l.project_id == ^project_id)
   end
 
   def get_ledger!(id), do: Repo.get!(Ledger, id)
