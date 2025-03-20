@@ -27,8 +27,9 @@ defmodule CommonLedgerWeb.ProjectController do
   end
 
   def show(conn, %{"id" => id}) do
-    project = Projects.get_project!(id)
-    render(conn, :show, project: project)
+    project = Projects.get_project!(id) |> CommonLedger.Repo.preload([:members])
+    group = Groups.get_group!(project.group_id)
+    render(conn, :show, project: project, group: group)
   end
 
   def edit(conn, %{"id" => id}) do

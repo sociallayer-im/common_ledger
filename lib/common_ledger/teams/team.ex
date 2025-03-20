@@ -3,11 +3,13 @@ defmodule CommonLedger.Teams.Team do
   import Ecto.Changeset
   alias CommonLedger.Groups.Group
   alias CommonLedger.Accounts.User
+  alias CommonLedger.Ledgers.Ledger
 
   schema "teams" do
     field :name, :string
     belongs_to :group, Group
     many_to_many :members, User, join_through: "team_members"
+    has_many :ledgers, Ledger
 
     timestamps()
   end

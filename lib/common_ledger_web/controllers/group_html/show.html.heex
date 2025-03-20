@@ -134,37 +134,36 @@
         </div>
         <div class="mt-4 divide-y divide-gray-200">
           <%= for project <- @group.projects do %>
-            <div class="flex items-center justify-between py-4">
-              <div class="flex items-center">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100">
-                  <span class="text-sm font-medium leading-none text-indigo-700">
-                    <%= String.slice(project.name, 0, 2) |> String.upcase() %>
+            <.link href={~p"/projects/#{project}"} class="block hover:bg-gray-50">
+              <div class="flex items-center justify-between py-4">
+                <div class="flex items-center">
+                  <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100">
+                    <span class="text-sm font-medium leading-none text-indigo-700">
+                      <%= String.slice(project.name, 0, 2) |> String.upcase() %>
+                    </span>
                   </span>
-                </span>
-                <div class="ml-3">
-                  <p class="text-sm font-medium text-gray-900"><%= project.name %></p>
-                  <p class="text-sm text-gray-500">0 members</p>
+                  <div class="ml-3">
+                    <p class="text-sm font-medium text-gray-900"><%= project.name %></p>
+                    <p class="text-sm text-gray-500">0 members</p>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                  <.link
+                    href={~p"/projects/#{project}/edit"}
+                    class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                  >
+                    Edit
+                  </.link>
+                  <form action={~p"/projects/#{project}"} method="post" class="inline">
+                    <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                    <input type="hidden" name="_method" value="delete" />
+                    <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-500">
+                      Delete
+                    </button>
+                  </form>
                 </div>
               </div>
-              <div class="flex items-center space-x-4">
-                <.link
-                  href={~p"/projects/#{project}/edit"}
-                  class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  Edit
-                </.link>
-                <form action={~p"/projects/#{project}"} method="post" class="inline">
-                  <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
-                  <input type="hidden" name="_method" value="delete" />
-                  <button
-                    type="submit"
-                    class="text-sm font-medium text-red-600 hover:text-red-500"
-                  >
-                    Delete
-                  </button>
-                </form>
-              </div>
-            </div>
+            </.link>
           <% end %>
 
           <%= if Enum.empty?(@group.projects) do %>
