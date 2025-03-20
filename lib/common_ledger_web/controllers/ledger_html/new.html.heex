@@ -7,6 +7,18 @@
   </div>
 
   <div class="mt-8">
-    <.ledger_form changeset={@changeset} action={~p"/projects/#{@project.id}/ledgers"} />
+    <.simple_form :let={f} for={@changeset} action={~p"/projects/#{@project.id}/ledgers"}>
+      <.input field={f[:name]} type="text" label="Name" />
+      <.input field={f[:description]} type="textarea" label="Description" />
+      <.input
+        field={f[:currency_type]}
+        type="select"
+        label="Currency"
+        options={["USD", "EUR", "GBP", "JPY", "CNY"]}
+      />
+      <:actions>
+        <.button>Save Ledger</.button>
+      </:actions>
+    </.simple_form>
   </div>
 </div>
