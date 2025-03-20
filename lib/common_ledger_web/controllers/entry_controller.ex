@@ -26,6 +26,28 @@ defmodule CommonLedgerWeb.EntryController do
     end
   end
 
+  def edit(conn, %{"id" => id}) do
+    entry = Entries.get_entry!(id)
+    ledger = Ledgers.get_ledger!(entry.ledger_id)
+    changeset = Entries.change_entry(entry)
+    render(conn, :edit, entry: entry, changeset: changeset, ledger: ledger)
+  end
+
+  def update(conn, %{"id" => id, "entry" => entry_params}) do
+    entry = Entries.get_entry!(id)
+
+    case Entries.update_entry(entry, entry_params) do
+      {:ok, entry} ->
+        conn
+        |> put_flash(:info, "Entry updated successfully.")
+        |> redirect(to: ~p"/ledgers/#{entry.ledger_id}")
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        ledger = Ledgers.get_ledger!(entry.ledger_id)
+        render(conn, :edit, entry: entry, changeset: changeset, ledger: ledger)
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     entry = Entries.get_entry!(id)
     {:ok, _entry} = Entries.delete_entry(entry)

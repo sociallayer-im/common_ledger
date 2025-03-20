@@ -24,4 +24,8 @@ defmodule CommonLedger.Entries do
   def delete_entry(%Entry{} = entry) do
     Repo.delete(entry)
   end
+
+  def change_entry(%Entry{} = entry, attrs \\ %{}) do
+    Entry.changeset(entry, attrs)
+  end
 end

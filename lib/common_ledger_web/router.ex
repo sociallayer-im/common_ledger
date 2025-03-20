@@ -50,6 +50,8 @@ defmodule CommonLedgerWeb.Router do
     # Entry routes
     get "/ledgers/:ledger_id/entries/new", EntryController, :new
     post "/ledgers/:ledger_id/entries", EntryController, :create
+    get "/entries/:id/edit", EntryController, :edit
+    put "/entries/:id", EntryController, :update
     delete "/entries/:id", EntryController, :delete
   end
 

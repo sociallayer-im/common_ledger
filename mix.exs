@@ -52,7 +52,8 @@ defmodule CommonLedger.MixProject do
       {:bandit, ">= 0.0.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:swoosh, "~> 1.4"},
-      {:gen_smtp, "~> 1.0"}
+      {:gen_smtp, "~> 1.0"},
+      {:number, "~> 1.0"}
     ]
   end
 
