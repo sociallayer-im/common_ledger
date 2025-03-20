@@ -4,6 +4,9 @@ defmodule CommonLedgerWeb.AccountController do
   alias CommonLedger.Accounts.Accounts
   alias CommonLedger.Accounts.Account
   alias CommonLedger.Projects
+  alias CommonLedger.Entries
+  alias CommonLedger.Repo
+  import Ecto.Query
 
   def new(conn, %{"project_id" => project_id}) do
     project = Projects.get_project!(project_id)
@@ -30,7 +33,20 @@ defmodule CommonLedgerWeb.AccountController do
     account = Accounts.get_account!(id)
     project = Projects.get_project!(account.project_id)
     changeset = Accounts.change_account(account)
-    render(conn, :edit, account: account, changeset: changeset, project: project)
+
+    # Calculate sums by currency
+    sums_by_currency = from(e in CommonLedger.Entries.Entry,
+      where: e.account_id == ^account.id,
+      group_by: e.currency,
+      select: {e.currency, sum(e.amount)}
+    ) |> Repo.all()
+
+    render(conn, :edit, 
+      account: account, 
+      changeset: changeset, 
+      project: project, 
+      sums_by_currency: sums_by_currency
+    )
   end
 
   def update(conn, %{"id" => id, "account" => account_params}) do
@@ -44,7 +60,18 @@ defmodule CommonLedgerWeb.AccountController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         project = Projects.get_project!(account.project_id)
-        render(conn, :edit, account: account, changeset: changeset, project: project)
+        # Recalculate sums in case of error
+        sums_by_currency = from(e in CommonLedger.Entries.Entry,
+          where: e.account_id == ^account.id,
+          group_by: e.currency,
+          select: {e.currency, sum(e.amount)}
+        ) |> Repo.all()
+        render(conn, :edit, 
+          account: account, 
+          changeset: changeset, 
+          project: project, 
+          sums_by_currency: sums_by_currency
+        )
     end
   end
 

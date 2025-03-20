@@ -7,6 +7,27 @@
   </div>
 
   <div class="mt-8">
+    <div class="bg-white shadow sm:rounded-lg mb-8">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-base font-semibold leading-6 text-gray-900">Account Summary</h3>
+        <div class="mt-4 divide-y divide-gray-200">
+          <%= if Enum.empty?(@sums_by_currency) do %>
+            <div class="py-4 text-sm text-gray-500">
+              No entries yet
+            </div>
+          <% else %>
+            <%= for {currency, sum} <- @sums_by_currency do %>
+              <div class="py-4">
+                <p class="text-sm font-medium text-gray-900">
+                  <%= Number.Currency.number_to_currency(sum, unit: currency) %>
+                </p>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
     <.simple_form :let={f} for={@changeset} method="put" action={~p"/accounts/#{@account.id}"}>
       <.input field={f[:name]} type="text" label="Name" />
       <.input
