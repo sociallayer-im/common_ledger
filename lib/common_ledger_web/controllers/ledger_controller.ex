@@ -4,6 +4,7 @@ defmodule CommonLedgerWeb.LedgerController do
   alias CommonLedger.Ledgers
   alias CommonLedger.Ledgers.Ledger
   alias CommonLedger.Projects
+  alias CommonLedger.Entries
 
   def new(conn, %{"project_id" => project_id}) do
     project = Projects.get_project!(project_id)
@@ -38,6 +39,7 @@ defmodule CommonLedgerWeb.LedgerController do
   def show(conn, %{"id" => id}) do
     ledger = Ledgers.get_ledger!(id)
     project = Projects.get_project!(ledger.project_id)
-    render(conn, :show, ledger: ledger, project: project)
+    entries = Entries.list_entries_by_ledger(id)
+    render(conn, :show, ledger: ledger, project: project, entries: entries)
   end
 end

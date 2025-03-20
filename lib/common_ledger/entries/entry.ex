@@ -7,7 +7,7 @@ defmodule CommonLedger.Entries.Entry do
     field :amount, :decimal
     field :currency, :string
     field :description, :string
-    
+
     belongs_to :ledger, Ledger
 
     timestamps()
