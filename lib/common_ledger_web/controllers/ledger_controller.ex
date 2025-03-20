@@ -27,6 +27,35 @@ defmodule CommonLedgerWeb.LedgerController do
     end
   end
 
+  def show(conn, %{"id" => id}) do
+    ledger = Ledgers.get_ledger!(id)
+    project = Projects.get_project!(ledger.project_id)
+    entries = Entries.list_entries_by_ledger(id)
+    render(conn, :show, ledger: ledger, project: project, entries: entries)
+  end
+
+  def edit(conn, %{"id" => id}) do
+    ledger = Ledgers.get_ledger!(id)
+    project = Projects.get_project!(ledger.project_id)
+    changeset = Ledger.changeset(ledger, %{})
+    render(conn, :edit, ledger: ledger, changeset: changeset, project: project)
+  end
+
+  def update(conn, %{"id" => id, "ledger" => ledger_params}) do
+    ledger = Ledgers.get_ledger!(id)
+
+    case Ledgers.update_ledger(ledger, ledger_params) do
+      {:ok, ledger} ->
+        conn
+        |> put_flash(:info, "Ledger updated successfully.")
+        |> redirect(to: ~p"/projects/#{ledger.project_id}")
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        project = Projects.get_project!(ledger.project_id)
+        render(conn, :edit, ledger: ledger, changeset: changeset, project: project)
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     ledger = Ledgers.get_ledger!(id)
     {:ok, _ledger} = Ledgers.delete_ledger(ledger)
@@ -34,12 +63,5 @@ defmodule CommonLedgerWeb.LedgerController do
     conn
     |> put_flash(:info, "Ledger deleted successfully.")
     |> redirect(to: ~p"/projects/#{ledger.project_id}")
-  end
-
-  def show(conn, %{"id" => id}) do
-    ledger = Ledgers.get_ledger!(id)
-    project = Projects.get_project!(ledger.project_id)
-    entries = Entries.list_entries_by_ledger(id)
-    render(conn, :show, ledger: ledger, project: project, entries: entries)
   end
 end
