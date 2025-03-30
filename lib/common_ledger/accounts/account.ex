@@ -8,7 +8,7 @@ defmodule CommonLedger.Accounts.Account do
     field :currency_type, :string, default: "CNY"
     field :balance, :decimal, default: Decimal.new("0")
 
-    belongs_to :project, Project
+    belongs_to :project, Project, type: :string
 
     timestamps()
   end

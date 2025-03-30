@@ -2,11 +2,12 @@ defmodule CommonLedger.Repo.Migrations.CreateLedgers do
   use Ecto.Migration
 
   def change do
-    create table(:ledgers) do
+    create table(:ledgers, primary_key: false) do
+      add :id, :string, primary_key: true
       add :name, :string, null: false
       add :description, :string
       add :currency_type, :string, null: false
-      add :project_id, references(:projects, on_delete: :delete_all), null: false
+      add :project_id, references(:projects, type: :string, on_delete: :delete_all), null: false
 
       timestamps()
     end
@@ -17,7 +18,7 @@ defmodule CommonLedger.Repo.Migrations.CreateLedgers do
     alter table(:entries) do
       remove :from_account_id
       remove :to_account_id
-      add :ledger_id, references(:ledgers, on_delete: :delete_all), null: false
+      add :ledger_id, references(:ledgers, type: :string, on_delete: :delete_all), null: false
     end
 
     create index(:entries, [:ledger_id])

@@ -11,7 +11,7 @@ defmodule CommonLedger.Entries.Entry do
     field :memo, :string
     field :category, :string
     
-    belongs_to :ledger, Ledger
+    belongs_to :ledger, Ledger, type: :string
     belongs_to :account, Account
 
     timestamps()
