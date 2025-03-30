@@ -10,7 +10,7 @@ defmodule CommonLedger.Accounts.UserToken do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
-    belongs_to :user, CommonLedger.Accounts.User
+    belongs_to :user, CommonLedger.Accounts.User, type: :string
 
     timestamps(updated_at: false)
   end

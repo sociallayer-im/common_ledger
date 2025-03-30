@@ -3,6 +3,7 @@ defmodule CommonLedger.Accounts.User do
   import Ecto.Changeset
   alias CommonLedger.Groups.Group
 
+  @primary_key {:id, :string, autogenerate: false}
   schema "users" do
     field :email, :string
     field :name, :string
@@ -15,6 +16,7 @@ defmodule CommonLedger.Accounts.User do
 
   def changeset(user, attrs) do
     user
+    |> ensure_id()
     |> cast(attrs, [:email, :name])
     |> validate_required([:email])
     |> validate_email()
@@ -26,4 +28,9 @@ defmodule CommonLedger.Accounts.User do
     |> validate_length(:email, max: 160)
     |> unique_constraint(:email)
   end
+
+  defp ensure_id(%{id: nil} = user) do
+    %{user | id: TSID.generate()}
+  end
+  defp ensure_id(user), do: user
 end

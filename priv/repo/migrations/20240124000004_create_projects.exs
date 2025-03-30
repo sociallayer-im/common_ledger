@@ -11,7 +11,7 @@ defmodule CommonLedger.Repo.Migrations.CreateProjects do
 
     create table(:project_members) do
       add :project_id, references(:projects, on_delete: :delete_all), null: false
-      add :user_id, references(:users, on_delete: :delete_all), null: false
+      add :user_id, references(:users, type: :string, on_delete: :delete_all), null: false
 
       timestamps()
     end
