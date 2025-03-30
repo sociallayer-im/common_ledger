@@ -16,7 +16,7 @@ defmodule CommonLedgerWeb.EntryController do
   def create(conn, %{"ledger_id" => ledger_id, "entry" => entry_params}) do
     entry_params = Map.put(entry_params, "ledger_id", ledger_id)
 
-    case Entries.create_entry(entry_params) do
+    case Entries.create_entry(entry_params) |> IO.inspect() do
       {:ok, _entry} ->
         conn
         |> put_flash(:info, "Entry created successfully.")

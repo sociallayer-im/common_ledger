@@ -3,6 +3,7 @@ defmodule CommonLedger.Accounts.Account do
   import Ecto.Changeset
   alias CommonLedger.Projects.Project
 
+  @primary_key {:id, :string, autogenerate: false}
   schema "accounts" do
     field :name, :string
     field :currency_type, :string, default: "CNY"
@@ -17,6 +18,7 @@ defmodule CommonLedger.Accounts.Account do
 
   def changeset(account, attrs) do
     account
+    |> ensure_id()
     |> cast(attrs, [:name, :currency_type, :balance, :project_id])
     |> validate_required([:name, :currency_type, :project_id])
     |> validate_length(:name, min: 2, max: 160)
@@ -26,4 +28,9 @@ defmodule CommonLedger.Accounts.Account do
   end
 
   def currencies, do: @currencies
+
+  defp ensure_id(%{id: nil} = account) do
+    %{account | id: TSID.generate()}
+  end
+  defp ensure_id(account), do: account
 end

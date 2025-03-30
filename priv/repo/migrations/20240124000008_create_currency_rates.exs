@@ -2,7 +2,8 @@ defmodule CommonLedger.Repo.Migrations.CreateCurrencyRates do
   use Ecto.Migration
 
   def change do
-    create table(:currency_rates) do
+    create table(:currency_rates, primary_key: false) do
+      add :id, :string, primary_key: true
       add :from_currency, :string, null: false
       add :to_currency, :string, null: false
       add :rate, :decimal, null: false
