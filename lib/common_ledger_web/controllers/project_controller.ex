@@ -7,25 +7,45 @@ defmodule CommonLedgerWeb.ProjectController do
   alias CommonLedger.Accounts
   alias CommonLedger.Accounts.Accounts
   alias CommonLedger.Ledgers
+  alias CommonLedgerWeb.AuthHelper
 
   def new(conn, %{"group_id" => group_id}) do
-    group = Groups.get_group!(group_id)
-    changeset = Project.changeset(%Project{group_id: group_id}, %{})
-    render(conn, :new, changeset: changeset, group: group)
+    case AuthHelper.ensure_group_member(conn, group_id) do
+      {:ok, conn} ->
+        group = Groups.get_group!(group_id)
+        changeset = Project.changeset(%Project{group_id: group_id}, %{})
+        render(conn, :new, changeset: changeset, group: group)
+      
+      {:error, :unauthorized} ->
+        conn
+        |> put_flash(:error, "You must be a group member to create projects")
+        |> redirect(to: ~p"/groups/#{group_id}")
+    end
   end
 
   def create(conn, %{"group_id" => group_id, "project" => project_params}) do
-    project_params = Map.put(project_params, "group_id", group_id)
+    case AuthHelper.ensure_group_member(conn, group_id) do
+      {:ok, conn} ->
+        project_params = Map.put(project_params, "group_id", group_id)
 
-    case Projects.create_project(project_params) do
-      {:ok, project} ->
+        case Projects.create_project(project_params) do
+          {:ok, project} ->
+            # Add creator as first project member
+            Projects.add_member(project, conn.assigns.current_user)
+            
+            conn
+            |> put_flash(:info, "Project created successfully.")
+            |> redirect(to: ~p"/groups/#{group_id}")
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            group = Groups.get_group!(group_id)
+            render(conn, :new, changeset: changeset, group: group)
+        end
+
+      {:error, :unauthorized} ->
         conn
-        |> put_flash(:info, "Project created successfully.")
+        |> put_flash(:error, "You must be a group member to create projects")
         |> redirect(to: ~p"/groups/#{group_id}")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        group = Groups.get_group!(group_id)
-        render(conn, :new, changeset: changeset, group: group)
     end
   end
 

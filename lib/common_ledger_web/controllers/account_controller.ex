@@ -6,26 +6,45 @@ defmodule CommonLedgerWeb.AccountController do
   alias CommonLedger.Projects
   alias CommonLedger.Entries
   alias CommonLedger.Repo
+  alias CommonLedgerWeb.AuthHelper
   import Ecto.Query
 
   def new(conn, %{"project_id" => project_id}) do
     project = Projects.get_project!(project_id)
-    changeset = Account.changeset(%Account{project_id: project_id}, %{})
-    render(conn, :new, changeset: changeset, project: project)
+    
+    case AuthHelper.ensure_group_member(conn, project.group_id) do
+      {:ok, conn} ->
+        changeset = Account.changeset(%Account{project_id: project_id}, %{})
+        render(conn, :new, changeset: changeset, project: project)
+      
+      {:error, :unauthorized} ->
+        conn
+        |> put_flash(:error, "You must be a group member to create accounts")
+        |> redirect(to: ~p"/projects/#{project_id}")
+    end
   end
 
   def create(conn, %{"project_id" => project_id, "account" => account_params}) do
-    account_params = Map.put(account_params, "project_id", project_id)
+    project = Projects.get_project!(project_id)
+    
+    case AuthHelper.ensure_group_member(conn, project.group_id) do
+      {:ok, conn} ->
+        account_params = Map.put(account_params, "project_id", project_id)
 
-    case Accounts.create_account(account_params) do
-      {:ok, _account} ->
+        case Accounts.create_account(account_params) do
+          {:ok, _account} ->
+            conn
+            |> put_flash(:info, "Account created successfully.")
+            |> redirect(to: ~p"/projects/#{project_id}")
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            render(conn, :new, changeset: changeset, project: project)
+        end
+
+      {:error, :unauthorized} ->
         conn
-        |> put_flash(:info, "Account created successfully.")
+        |> put_flash(:error, "You must be a group member to create accounts")
         |> redirect(to: ~p"/projects/#{project_id}")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        project = Projects.get_project!(project_id)
-        render(conn, :new, changeset: changeset, project: project)
     end
   end
 

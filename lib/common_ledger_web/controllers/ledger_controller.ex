@@ -5,25 +5,42 @@ defmodule CommonLedgerWeb.LedgerController do
   alias CommonLedger.Ledgers.Ledger
   alias CommonLedger.Projects
   alias CommonLedger.Entries
+  alias CommonLedgerWeb.AuthHelper
 
   def new(conn, %{"project_id" => project_id}) do
-    project = Projects.get_project!(project_id)
-    changeset = Ledger.changeset(%Ledger{project_id: project_id}, %{})
-    render(conn, :new, changeset: changeset, project: project)
+    case AuthHelper.ensure_project_member(conn, project_id) do
+      {:ok, conn} ->
+        project = Projects.get_project!(project_id)
+        changeset = Ledger.changeset(%Ledger{project_id: project_id}, %{})
+        render(conn, :new, changeset: changeset, project: project)
+
+      {:error, :unauthorized} ->
+        conn
+        |> put_flash(:error, "You must be a project member to create ledgers")
+        |> redirect(to: ~p"/projects/#{project_id}")
+    end
   end
 
   def create(conn, %{"project_id" => project_id, "ledger" => ledger_params}) do
-    ledger_params = Map.put(ledger_params, "project_id", project_id)
+    case AuthHelper.ensure_project_member(conn, project_id) do
+      {:ok, conn} ->
+        ledger_params = Map.put(ledger_params, "project_id", project_id)
 
-    case Ledgers.create_ledger(ledger_params) do
-      {:ok, _ledger} ->
+        case Ledgers.create_ledger(ledger_params) do
+          {:ok, _ledger} ->
+            conn
+            |> put_flash(:info, "Ledger created successfully.")
+            |> redirect(to: ~p"/projects/#{project_id}")
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            project = Projects.get_project!(project_id)
+            render(conn, :new, changeset: changeset, project: project)
+        end
+
+      {:error, :unauthorized} ->
         conn
-        |> put_flash(:info, "Ledger created successfully.")
+        |> put_flash(:error, "You must be a project member to create ledgers")
         |> redirect(to: ~p"/projects/#{project_id}")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        project = Projects.get_project!(project_id)
-        render(conn, :new, changeset: changeset, project: project)
     end
   end
 

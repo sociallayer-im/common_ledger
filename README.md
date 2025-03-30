@@ -19,15 +19,15 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 ### Todo
 
-  * authorization
-  * data export
+  <!-- * authorization -->
+  <!-- * data export -->
   * data storage
   * entry categories
   * operation logs
   * landing page
   * user profile
   * OAuth2
-  * snowflake id
+  <!-- * snowflake id -->
   * connect sola
   * entry attachments
   * fly.io deployment

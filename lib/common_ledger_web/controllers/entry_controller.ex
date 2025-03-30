@@ -5,27 +5,46 @@ defmodule CommonLedgerWeb.EntryController do
   alias CommonLedger.Entries.Entry
   alias CommonLedger.Ledgers
   alias CommonLedger.Accounts.Accounts
+  alias CommonLedgerWeb.AuthHelper
 
   def new(conn, %{"ledger_id" => ledger_id}) do
     ledger = Ledgers.get_ledger!(ledger_id)
-    accounts = Accounts.list_accounts_by_project(ledger.project_id)
-    changeset = Entry.changeset(%Entry{ledger_id: ledger_id}, %{})
-    render(conn, :new, changeset: changeset, ledger: ledger, accounts: accounts)
+    
+    case AuthHelper.ensure_project_member(conn, ledger.project_id) do
+      {:ok, conn} ->
+        accounts = Accounts.list_accounts_by_project(ledger.project_id)
+        changeset = Entry.changeset(%Entry{ledger_id: ledger_id}, %{})
+        render(conn, :new, changeset: changeset, ledger: ledger, accounts: accounts)
+
+      {:error, :unauthorized} ->
+        conn
+        |> put_flash(:error, "You must be a project member to create entries")
+        |> redirect(to: ~p"/ledgers/#{ledger_id}")
+    end
   end
 
   def create(conn, %{"ledger_id" => ledger_id, "entry" => entry_params}) do
-    entry_params = Map.put(entry_params, "ledger_id", ledger_id)
+    ledger = Ledgers.get_ledger!(ledger_id)
+    
+    case AuthHelper.ensure_project_member(conn, ledger.project_id) do
+      {:ok, conn} ->
+        entry_params = Map.put(entry_params, "ledger_id", ledger_id)
 
-    case Entries.create_entry(entry_params) |> IO.inspect() do
-      {:ok, _entry} ->
+        case Entries.create_entry(entry_params) do
+          {:ok, _entry} ->
+            conn
+            |> put_flash(:info, "Entry created successfully.")
+            |> redirect(to: ~p"/ledgers/#{ledger_id}")
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            accounts = Accounts.list_accounts_by_project(ledger.project_id)
+            render(conn, :new, changeset: changeset, ledger: ledger, accounts: accounts)
+        end
+
+      {:error, :unauthorized} ->
         conn
-        |> put_flash(:info, "Entry created successfully.")
+        |> put_flash(:error, "You must be a project member to create entries")
         |> redirect(to: ~p"/ledgers/#{ledger_id}")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        ledger = Ledgers.get_ledger!(ledger_id)
-        accounts = Accounts.list_accounts_by_project(ledger.project_id)
-        render(conn, :new, changeset: changeset, ledger: ledger, accounts: accounts)
     end
   end
 
