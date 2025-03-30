@@ -4,7 +4,7 @@ defmodule CommonLedger.Repo.Migrations.CreateProjects do
   def change do
     create table(:projects) do
       add :name, :string, null: false
-      add :group_id, references(:groups, on_delete: :delete_all), null: false
+      add :group_id, references(:groups, type: :string, on_delete: :delete_all), null: false
 
       timestamps()
     end

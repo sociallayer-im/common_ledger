@@ -2,7 +2,8 @@ defmodule CommonLedger.Repo.Migrations.CreateGroups do
   use Ecto.Migration
 
   def change do
-    create table(:groups) do
+    create table(:groups, primary_key: false) do
+      add :id, :string, primary_key: true
       add :name, :string, null: false
       add :description, :string
 
@@ -10,7 +11,7 @@ defmodule CommonLedger.Repo.Migrations.CreateGroups do
     end
 
     create table(:group_members) do
-      add :group_id, references(:groups, on_delete: :delete_all), null: false
+      add :group_id, references(:groups, type: :string, on_delete: :delete_all), null: false
       add :user_id, references(:users, type: :string, on_delete: :delete_all), null: false
 
       timestamps()

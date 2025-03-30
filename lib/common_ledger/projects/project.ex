@@ -6,7 +6,7 @@ defmodule CommonLedger.Projects.Project do
 
   schema "projects" do
     field :name, :string
-    belongs_to :group, Group
+    belongs_to :group, Group, type: :string
     many_to_many :members, User, join_through: "project_members"
 
     timestamps()

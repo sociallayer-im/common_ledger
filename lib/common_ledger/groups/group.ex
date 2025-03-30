@@ -4,6 +4,7 @@ defmodule CommonLedger.Groups.Group do
   alias CommonLedger.Accounts.User
   alias CommonLedger.Projects.Project
 
+  @primary_key {:id, :string, autogenerate: false}
   schema "groups" do
     field :name, :string
     field :description, :string
@@ -16,8 +17,14 @@ defmodule CommonLedger.Groups.Group do
 
   def changeset(group, attrs) do
     group
+    |> ensure_id()
     |> cast(attrs, [:name, :description])
     |> validate_required([:name])
     |> validate_length(:name, min: 2, max: 160)
   end
+
+  defp ensure_id(%{id: nil} = group) do
+    %{group | id: TSID.generate()}
+  end
+  defp ensure_id(group), do: group
 end
