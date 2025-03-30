@@ -28,6 +28,10 @@ defmodule CommonLedger.Accounts.UserToken do
     }}
   end
 
+  def token_and_context_query(token, context) do
+    from t in CommonLedger.Accounts.UserToken, where: [token: ^:crypto.hash(@hash_algorithm, token), context: ^context]
+  end
+
   defp build_token(user, context, sent_to) do
     token = :rand.uniform(900_000) + 100_000
     token_string = Integer.to_string(token)

@@ -5,7 +5,6 @@ defmodule CommonLedgerWeb.ProjectController do
   alias CommonLedger.Projects.Project
   alias CommonLedger.Groups
   alias CommonLedger.Accounts
-  alias CommonLedger.Accounts.Accounts
   alias CommonLedger.Ledgers
   alias CommonLedgerWeb.AuthHelper
 
@@ -15,7 +14,7 @@ defmodule CommonLedgerWeb.ProjectController do
         group = Groups.get_group!(group_id)
         changeset = Project.changeset(%Project{group_id: group_id}, %{})
         render(conn, :new, changeset: changeset, group: group)
-      
+
       {:error, :unauthorized} ->
         conn
         |> put_flash(:error, "You must be a group member to create projects")
@@ -32,7 +31,7 @@ defmodule CommonLedgerWeb.ProjectController do
           {:ok, project} ->
             # Add creator as first project member
             Projects.add_member(project, conn.assigns.current_user)
-            
+
             conn
             |> put_flash(:info, "Project created successfully.")
             |> redirect(to: ~p"/groups/#{group_id}")
@@ -53,7 +52,7 @@ defmodule CommonLedgerWeb.ProjectController do
     project = Projects.get_project!(id) |> CommonLedger.Repo.preload([:members])
     group = Groups.get_group!(project.group_id)
     ledgers = CommonLedger.Ledgers.list_ledgers_by_project(project.id)
-    accounts = Accounts.list_accounts_by_project(project.id)
+    accounts = Accounts.Accounts.list_accounts_by_project(project.id)
     render(conn, :show, project: project, group: group, ledgers: ledgers, accounts: accounts)
   end
 
@@ -87,7 +86,7 @@ defmodule CommonLedgerWeb.ProjectController do
   end
 
   def add_member_form(conn, %{"id" => id}) do
-    project = Projects.get_project!(id)
+    project = Projects.get_project!(id) |> IO.inspect()
     render(conn, :add_member_form, project: project)
   end
 

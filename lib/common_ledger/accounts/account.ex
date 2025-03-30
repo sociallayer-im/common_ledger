@@ -25,6 +25,7 @@ defmodule CommonLedger.Accounts.Account do
     |> validate_inclusion(:currency_type, @currencies)
     |> validate_number(:balance, greater_than_or_equal_to: 0)
     |> foreign_key_constraint(:project_id)
+    |> IO.inspect()
   end
 
   def currencies, do: @currencies
