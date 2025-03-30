@@ -19,9 +19,20 @@ defmodule CommonLedgerWeb.GroupController do
   def create(conn, %{"group" => group_params}) do
     case Groups.create_group(group_params) do
       {:ok, group} ->
-        conn
-        |> put_flash(:info, "Group created successfully.")
-        |> redirect(to: ~p"/groups/#{group}")
+        # Add creator as first group member
+        case Groups.add_member(group, conn.assigns.current_user) do
+          {:ok, _group} ->
+            conn
+            |> put_flash(:info, "Group created successfully.")
+            |> redirect(to: ~p"/groups/#{group}")
+            
+          {:error, _} ->
+            # If adding member fails, delete the group and show error
+            Groups.delete_group(group)
+            conn
+            |> put_flash(:error, "Failed to create group.")
+            |> redirect(to: ~p"/groups")
+        end
 
       {:error, changeset} ->
         render(conn, :new, changeset: changeset)
