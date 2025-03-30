@@ -25,10 +25,11 @@ defmodule CommonLedgerWeb.GroupController do
             conn
             |> put_flash(:info, "Group created successfully.")
             |> redirect(to: ~p"/groups/#{group}")
-            
+
           {:error, _} ->
             # If adding member fails, delete the group and show error
             Groups.delete_group(group)
+
             conn
             |> put_flash(:error, "Failed to create group.")
             |> redirect(to: ~p"/groups")
@@ -40,11 +41,14 @@ defmodule CommonLedgerWeb.GroupController do
   end
 
   def show(conn, %{"id" => id}) do
-    group = Groups.get_group!(id) 
-            |> Repo.preload([
-              :members,
-              projects: [:members]  # Preload members for each project
-            ])
+    group =
+      Groups.get_group!(id)
+      |> Repo.preload([
+        :members,
+        # Preload members for each project
+        projects: [:members]
+      ])
+
     render(conn, :show, group: group)
   end
 

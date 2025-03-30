@@ -31,5 +31,6 @@ defmodule CommonLedger.Entries.Entry do
   defp ensure_id(%{id: nil} = entry) do
     %{entry | id: TSID.generate()}
   end
+
   defp ensure_id(entry), do: entry
 end

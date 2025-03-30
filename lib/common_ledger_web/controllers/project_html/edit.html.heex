@@ -7,13 +7,23 @@
   </div>
 
   <div class="mt-8">
-    <.form :let={f} for={@changeset} action={~p"/projects/#{@project}"} method="put" class="space-y-6">
+    <.form
+      :let={f}
+      for={@changeset}
+      action={~p"/projects/#{@project}"}
+      method="put"
+      class="space-y-6"
+    >
       <div>
         <label for="name" class="block text-sm font-medium leading-6 text-gray-900">
           Project Name
         </label>
         <div class="mt-2">
-          <%= Phoenix.HTML.Form.text_input f, :name, required: true, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+          <%= Phoenix.HTML.Form.text_input(f, :name,
+            required: true,
+            class:
+              "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          ) %>
           <%= if error = f.errors[:name] do %>
             <p class="mt-2 text-sm text-red-600"><%= elem(error, 0) %></p>
           <% end %>

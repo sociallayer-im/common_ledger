@@ -11,7 +11,7 @@
     <form action={~p"/auth/verify"} method="POST" class="space-y-6">
       <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
       <input type="hidden" name="email" value={@email} />
-      
+
       <div>
         <label for="code" class="block text-sm font-medium leading-6 text-gray-900">
           Verification Code

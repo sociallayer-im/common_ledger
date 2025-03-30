@@ -5,7 +5,6 @@ defmodule CommonLedgerWeb.ProjectController do
   alias CommonLedger.Projects.Project
   alias CommonLedger.Groups
   alias CommonLedger.Accounts
-  alias CommonLedger.Ledgers
   alias CommonLedgerWeb.AuthHelper
 
   def new(conn, %{"group_id" => group_id}) do

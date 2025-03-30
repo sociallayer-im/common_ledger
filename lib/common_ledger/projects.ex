@@ -28,24 +28,30 @@ defmodule CommonLedger.Projects do
 
   def add_member(%Project{} = project, %User{} = user) do
     project = Repo.preload(project, :members)
-    
+
     if Enum.any?(project.members, fn member -> member.id == user.id end) do
       {:error, :already_member}
     else
-      Repo.insert_all("project_members", [%{
-        project_id: project.id,
-        user_id: user.id,
-        inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
-        updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-      }])
+      Repo.insert_all("project_members", [
+        %{
+          project_id: project.id,
+          user_id: user.id,
+          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
+          updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+        }
+      ])
+
       {:ok, project}
     end
   end
 
   def remove_member(%Project{} = project, %User{} = user) do
-    {count, _} = Repo.delete_all(from pm in "project_members",
-      where: pm.project_id == ^project.id and pm.user_id == ^user.id)
-    
+    {count, _} =
+      Repo.delete_all(
+        from pm in "project_members",
+          where: pm.project_id == ^project.id and pm.user_id == ^user.id
+      )
+
     if count > 0 do
       {:ok, project}
     else

@@ -32,5 +32,6 @@ defmodule CommonLedger.Ledgers.Ledger do
   defp ensure_id(%{id: nil} = ledger) do
     %{ledger | id: TSID.generate()}
   end
+
   defp ensure_id(ledger), do: ledger
 end

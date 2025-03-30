@@ -9,7 +9,7 @@
   <div class="mt-8">
     <form action={~p"/projects/#{@project}/add_member"} method="POST" class="space-y-6">
       <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
-      
+
       <div>
         <label for="email" class="block text-sm font-medium leading-6 text-gray-900">
           Member Email

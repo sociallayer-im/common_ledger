@@ -18,6 +18,7 @@ defmodule CommonLedgerWeb.AuthController do
     else
       # Handle non-existent user case
       user_params = %{email: email}
+
       case Accounts.create_user(user_params) do
         {:ok, user} ->
           Accounts.deliver_user_login_token(user)
@@ -26,7 +27,7 @@ defmodule CommonLedgerWeb.AuthController do
           |> put_session(:login_email, email)
           |> put_flash(:info, "Verification code sent to your email.")
           |> redirect(to: ~p"/auth/verify")
-        
+
         {:error, _changeset} ->
           conn
           |> put_flash(:error, "Invalid email format.")
@@ -41,6 +42,7 @@ defmodule CommonLedgerWeb.AuthController do
         conn
         |> put_flash(:error, "Please enter your email first")
         |> redirect(to: ~p"/auth/login")
+
       email ->
         render(conn, :verify, email: email)
     end
@@ -48,7 +50,7 @@ defmodule CommonLedgerWeb.AuthController do
 
   def verify(conn, %{"code" => code}) do
     email = get_session(conn, :login_email)
-    
+
     case Accounts.get_user_by_email_and_token(email, code) do
       {user, _token} ->
         token = Accounts.generate_user_session_token(user)

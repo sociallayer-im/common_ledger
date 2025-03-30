@@ -32,5 +32,6 @@ defmodule CommonLedger.Accounts.User do
   defp ensure_id(%{id: nil} = user) do
     %{user | id: TSID.generate()}
   end
+
   defp ensure_id(user), do: user
 end

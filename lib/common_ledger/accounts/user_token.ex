@@ -21,26 +21,30 @@ defmodule CommonLedger.Accounts.UserToken do
 
   def build_session_token(user) do
     token = :crypto.strong_rand_bytes(@rand_size)
-    {token, %CommonLedger.Accounts.UserToken{
-      token: :crypto.hash(@hash_algorithm, token),
-      context: "session",
-      user_id: user.id
-    }}
+
+    {token,
+     %CommonLedger.Accounts.UserToken{
+       token: :crypto.hash(@hash_algorithm, token),
+       context: "session",
+       user_id: user.id
+     }}
   end
 
   def token_and_context_query(token, context) do
-    from t in CommonLedger.Accounts.UserToken, where: [token: ^:crypto.hash(@hash_algorithm, token), context: ^context]
+    from t in CommonLedger.Accounts.UserToken,
+      where: [token: ^:crypto.hash(@hash_algorithm, token), context: ^context]
   end
 
   defp build_token(user, context, sent_to) do
     token = :rand.uniform(900_000) + 100_000
     token_string = Integer.to_string(token)
 
-    {token, %CommonLedger.Accounts.UserToken{
-      token: token_string,
-      context: context,
-      sent_to: sent_to,
-      user_id: user.id
-    }}
+    {token,
+     %CommonLedger.Accounts.UserToken{
+       token: token_string,
+       context: context,
+       sent_to: sent_to,
+       user_id: user.id
+     }}
   end
 end

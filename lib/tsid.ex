@@ -15,7 +15,7 @@ defmodule TSID do
   producing a 13-character string.
   """
 
-  use Bitwise
+  import Bitwise
 
   @base32_chars "234567abcdefghijklmnopqrstuvwxyz"
   @tsid_length 13
@@ -70,10 +70,11 @@ defmodule TSID do
   Returns a 13-character base32-sortable string.
   """
   @spec create(non_neg_integer, non_neg_integer) :: String.t()
-  def create(timestamp_us, clock_id) when timestamp_us >= 0 and clock_id >= 0 and clock_id <= @max_clock_id do
+  def create(timestamp_us, clock_id)
+      when timestamp_us >= 0 and clock_id >= 0 and clock_id <= @max_clock_id do
     # Combine timestamp and clock ID into a 64-bit integer
     # Top bit is 0, next 53 bits are timestamp, last 10 bits are clock ID
-    value = (timestamp_us <<< @clock_id_bits) ||| clock_id
+    value = timestamp_us <<< @clock_id_bits ||| clock_id
 
     # Encode to base32-sortable
     encode_base32(value)
@@ -105,12 +106,15 @@ defmodule TSID do
           |> NaiveDateTime.add(div(timestamp_us, 1_000_000), :second)
           |> NaiveDateTime.add(rem(timestamp_us, 1_000_000), :microsecond)
 
-        {:ok, %{
-          timestamp_us: timestamp_us,
-          clock_id: clock_id,
-          datetime: datetime
-        }}
-      error -> error
+        {:ok,
+         %{
+           timestamp_us: timestamp_us,
+           clock_id: clock_id,
+           datetime: datetime
+         }}
+
+      error ->
+        error
     end
   end
 
@@ -152,7 +156,16 @@ defmodule TSID do
   """
   @spec compare(String.t(), String.t()) :: :lt | :eq | :gt
   def compare(tsid1, tsid2) do
-    String.compare(tsid1, tsid2)
+    # Decode both TSIDs to get their components
+    {:ok, {timestamp1, _random1}} = decode(tsid1)
+    {:ok, {timestamp2, _random2}} = decode(tsid2)
+
+    cond do
+      timestamp1 < timestamp2 -> :lt
+      timestamp1 > timestamp2 -> :gt
+      # If timestamps are equal, compare the original strings to maintain total ordering
+      true -> :eq
+    end
   end
 
   @doc """

@@ -28,27 +28,33 @@ defmodule CommonLedger.Groups do
 
   def add_member(%Group{} = group, %User{} = user) do
     group = Repo.preload(group, :members)
-    
+
     # Check if user is already a member
     if Enum.any?(group.members, fn member -> member.id == user.id end) do
       {:error, :already_member}
     else
       # Insert into join table directly
-      Repo.insert_all("group_members", [%{
-        group_id: group.id,
-        user_id: user.id,
-        inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
-        updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-      }])
+      Repo.insert_all("group_members", [
+        %{
+          group_id: group.id,
+          user_id: user.id,
+          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
+          updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+        }
+      ])
+
       {:ok, group}
     end
   end
 
   def remove_member(%Group{} = group, %User{} = user) do
     # Delete directly from the join table
-    {count, _} = Repo.delete_all(from gm in "group_members",
-      where: gm.group_id == ^group.id and gm.user_id == ^user.id)
-    
+    {count, _} =
+      Repo.delete_all(
+        from gm in "group_members",
+          where: gm.group_id == ^group.id and gm.user_id == ^user.id
+      )
+
     if count > 0 do
       {:ok, group}
     else

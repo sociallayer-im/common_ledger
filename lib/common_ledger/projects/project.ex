@@ -25,5 +25,6 @@ defmodule CommonLedger.Projects.Project do
   defp ensure_id(%{id: nil} = project) do
     %{project | id: TSID.generate()}
   end
+
   defp ensure_id(project), do: project
 end

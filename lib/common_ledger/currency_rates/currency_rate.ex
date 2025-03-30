@@ -27,5 +27,6 @@ defmodule CommonLedger.CurrencyRates.CurrencyRate do
   defp ensure_id(%{id: nil} = currency_rate) do
     %{currency_rate | id: TSID.generate()}
   end
+
   defp ensure_id(currency_rate), do: currency_rate
 end

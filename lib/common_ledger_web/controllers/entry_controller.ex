@@ -9,7 +9,7 @@ defmodule CommonLedgerWeb.EntryController do
 
   def new(conn, %{"ledger_id" => ledger_id}) do
     ledger = Ledgers.get_ledger!(ledger_id)
-    
+
     case AuthHelper.ensure_project_member(conn, ledger.project_id) do
       {:ok, conn} ->
         accounts = Accounts.list_accounts_by_project(ledger.project_id)
@@ -25,7 +25,7 @@ defmodule CommonLedgerWeb.EntryController do
 
   def create(conn, %{"ledger_id" => ledger_id, "entry" => entry_params}) do
     ledger = Ledgers.get_ledger!(ledger_id)
-    
+
     case AuthHelper.ensure_project_member(conn, ledger.project_id) do
       {:ok, conn} ->
         entry_params = Map.put(entry_params, "ledger_id", ledger_id)
@@ -68,7 +68,13 @@ defmodule CommonLedgerWeb.EntryController do
       {:error, %Ecto.Changeset{} = changeset} ->
         ledger = Ledgers.get_ledger!(entry.ledger_id)
         accounts = Accounts.list_accounts_by_project(ledger.project_id)
-        render(conn, :edit, entry: entry, changeset: changeset, ledger: ledger, accounts: accounts)
+
+        render(conn, :edit,
+          entry: entry,
+          changeset: changeset,
+          ledger: ledger,
+          accounts: accounts
+        )
     end
   end
 

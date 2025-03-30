@@ -33,5 +33,6 @@ defmodule CommonLedger.Accounts.Account do
   defp ensure_id(%{id: nil} = account) do
     %{account | id: TSID.generate()}
   end
+
   defp ensure_id(account), do: account
 end

@@ -28,10 +28,10 @@ defmodule CommonLedger.CurrencyRates do
   def get_rate(from_currency, to_currency) do
     Repo.one(
       from cr in CurrencyRate,
-      where: cr.from_currency == ^from_currency and cr.to_currency == ^to_currency,
-      order_by: [desc: cr.last_updated_at],
-      limit: 1,
-      select: cr.rate
+        where: cr.from_currency == ^from_currency and cr.to_currency == ^to_currency,
+        order_by: [desc: cr.last_updated_at],
+        limit: 1,
+        select: cr.rate
     )
   end
 end

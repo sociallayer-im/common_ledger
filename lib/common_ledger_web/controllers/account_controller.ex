@@ -4,7 +4,6 @@ defmodule CommonLedgerWeb.AccountController do
   alias CommonLedger.Accounts
   alias CommonLedger.Accounts.Account
   alias CommonLedger.Projects
-  alias CommonLedger.Entries
   alias CommonLedger.Repo
   alias CommonLedgerWeb.AuthHelper
   import Ecto.Query
@@ -51,16 +50,18 @@ defmodule CommonLedgerWeb.AccountController do
   end
 
   def edit(conn, %{"id" => id}) do
-    account = Accounts.get_account!(id)
+    account = Accounts.Accounts.get_account!(id)
     project = Projects.get_project!(account.project_id)
-    changeset = Accounts.change_account(account)
+    changeset = Accounts.Accounts.change_account(account)
 
     # Calculate sums by currency
-    sums_by_currency = from(e in CommonLedger.Entries.Entry,
-      where: e.account_id == ^account.id,
-      group_by: e.currency,
-      select: {e.currency, sum(e.amount)}
-    ) |> Repo.all()
+    sums_by_currency =
+      from(e in CommonLedger.Entries.Entry,
+        where: e.account_id == ^account.id,
+        group_by: e.currency,
+        select: {e.currency, sum(e.amount)}
+      )
+      |> Repo.all()
 
     render(conn, :edit,
       account: account,
@@ -71,9 +72,9 @@ defmodule CommonLedgerWeb.AccountController do
   end
 
   def update(conn, %{"id" => id, "account" => account_params}) do
-    account = Accounts.get_account!(id)
+    account = Accounts.Accounts.get_account!(id)
 
-    case Accounts.update_account(account, account_params) do
+    case Accounts.Accounts.update_account(account, account_params) do
       {:ok, account} ->
         conn
         |> put_flash(:info, "Account updated successfully.")
@@ -82,11 +83,14 @@ defmodule CommonLedgerWeb.AccountController do
       {:error, %Ecto.Changeset{} = changeset} ->
         project = Projects.get_project!(account.project_id)
         # Recalculate sums in case of error
-        sums_by_currency = from(e in CommonLedger.Entries.Entry,
-          where: e.account_id == ^account.id,
-          group_by: e.currency,
-          select: {e.currency, sum(e.amount)}
-        ) |> Repo.all()
+        sums_by_currency =
+          from(e in CommonLedger.Entries.Entry,
+            where: e.account_id == ^account.id,
+            group_by: e.currency,
+            select: {e.currency, sum(e.amount)}
+          )
+          |> Repo.all()
+
         render(conn, :edit,
           account: account,
           changeset: changeset,
@@ -97,8 +101,8 @@ defmodule CommonLedgerWeb.AccountController do
   end
 
   def delete(conn, %{"id" => id}) do
-    account = Accounts.get_account!(id)
-    {:ok, _account} = Accounts.delete_account(account)
+    account = Accounts.Accounts.get_account!(id)
+    {:ok, _account} = Accounts.Accounts.delete_account(account)
 
     conn
     |> put_flash(:info, "Account deleted successfully.")

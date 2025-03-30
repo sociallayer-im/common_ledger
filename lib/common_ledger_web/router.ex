@@ -19,7 +19,7 @@ defmodule CommonLedgerWeb.Router do
     pipe_through :browser
 
     get "/", GroupController, :index
-    
+
     # Auth routes
     get "/auth/login", AuthController, :new
     post "/auth/login", AuthController, :login

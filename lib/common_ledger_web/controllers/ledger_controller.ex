@@ -85,21 +85,23 @@ defmodule CommonLedgerWeb.LedgerController do
   def export(conn, %{"id" => id}) do
     ledger = Ledgers.get_ledger!(id)
     entries = Entries.list_entries_by_ledger(id)
-    
-    csv_content = 
-      [["Amount", "Currency", "Category", "Description", "Account", "Memo", "Date"]] ++
-      Enum.map(entries, fn entry -> [
-        entry.amount,
-        entry.currency,
-        entry.category || "",
-        entry.description || "",
-        if(entry.account, do: entry.account.name, else: ""),
-        entry.memo || "",
-        NaiveDateTime.to_string(entry.inserted_at)
-      ] end)
-      |> CSV.encode
-      |> Enum.to_list
-      |> Enum.join
+
+    csv_content =
+      ([["Amount", "Currency", "Category", "Description", "Account", "Memo", "Date"]] ++
+         Enum.map(entries, fn entry ->
+           [
+             entry.amount,
+             entry.currency,
+             entry.category || "",
+             entry.description || "",
+             if(entry.account, do: entry.account.name, else: ""),
+             entry.memo || "",
+             NaiveDateTime.to_string(entry.inserted_at)
+           ]
+         end))
+      |> CSV.encode()
+      |> Enum.to_list()
+      |> Enum.join()
 
     conn
     |> put_resp_content_type("text/csv")

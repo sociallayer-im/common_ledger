@@ -8,10 +8,10 @@ defmodule CommonLedger.Groups.Group do
   schema "groups" do
     field :name, :string
     field :description, :string
-    
+
     many_to_many :members, User, join_through: "group_members"
     has_many :projects, Project
-    
+
     timestamps()
   end
 
@@ -26,5 +26,6 @@ defmodule CommonLedger.Groups.Group do
   defp ensure_id(%{id: nil} = group) do
     %{group | id: TSID.generate()}
   end
+
   defp ensure_id(group), do: group
 end
